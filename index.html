@@ -3,214 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Canal Endêmico — Dengue · São Luís/MA</title>
+<title>Diagrama de Controle da Dengue — São Luís/MA</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --border: #e2e0d8;
+  --text: #1a1917;
+  --muted: #6b6a65;
+  --font: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--text); padding: 2rem 1.5rem 4rem; }
+.page { max-width: 980px; margin: 0 auto; }
 
-  :root {
-    --bg: #f7f6f2;
-    --surface: #ffffff;
-    --border: #e2e0d8;
-    --text: #1a1917;
-    --muted: #6b6a65;
-    --green: #16a34a;
-    --yellow: #ca8a04;
-    --orange: #ea580c;
-    --red: #dc2626;
-    --slate: #64748b;
-    --bar25: rgba(148,163,184,0.55);
-    --bar26: rgba(220,38,38,0.82);
-    --font: 'IBM Plex Sans', sans-serif;
-    --mono: 'IBM Plex Mono', monospace;
-  }
+/* HEADER */
+.site-header {
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 1rem; margin-bottom: 2.5rem;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: .5rem;
+}
+.site-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.site-header p { font-size: .8rem; color: var(--muted); margin-top: .3rem; font-family: var(--mono); }
+.badge { font-family: var(--mono); font-size: .72rem; background: var(--text); color: var(--bg); padding: 4px 12px; border-radius: 4px; white-space: nowrap; }
 
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2rem 1.5rem 3rem;
-  }
+/* SEÇÃO */
+.section { margin-bottom: 3.5rem; }
+.section-header { margin-bottom: 1.2rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+.section-header h2 { font-size: 1.05rem; font-weight: 600; }
+.section-header p { font-size: .78rem; color: var(--muted); font-family: var(--mono); margin-top: .25rem; }
 
-  header {
-    max-width: 960px;
-    margin: 0 auto 2rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1.25rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 0.5rem;
-    justify-content: space-between;
-  }
+/* SELETOR DE ANO */
+.year-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.2rem; }
+.year-btn {
+  font-family: var(--mono); font-size: .8rem; font-weight: 500;
+  padding: 5px 16px; border-radius: 5px;
+  border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--muted);
+  cursor: pointer; transition: all .15s;
+}
+.year-btn:hover { border-color: var(--text); color: var(--text); }
+.year-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-  header .titles h1 {
-    font-size: 1.35rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
+/* INFO BAR */
+.info-bar {
+  font-size: .75rem; font-family: var(--mono); color: var(--muted);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; padding: 7px 12px; margin-bottom: 1rem;
+}
+.info-bar strong { color: var(--text); }
 
-  header .titles p {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-    font-family: var(--mono);
-  }
+/* TOGGLES */
+.controls-label { font-size: .72rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .4rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1rem; }
+.toggles button {
+  font-family: var(--mono); font-size: .72rem; padding: 3px 10px;
+  border-radius: 4px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); cursor: pointer; transition: opacity .15s;
+}
+.toggles button:hover { background: #eeecea; }
+.toggles button.off { opacity: .28; }
 
-  header .badge {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    background: #1a1917;
-    color: #f7f6f2;
-    padding: 4px 10px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
+/* CARD GRÁFICO */
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem 1rem; margin-bottom: 1rem; }
+.chart-wrap { position: relative; width: 100%; height: 420px; }
 
-  .card {
-    max-width: 960px;
-    margin: 0 auto 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem 1.5rem;
-  }
+/* LEGENDA */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .75rem; color: var(--muted); margin-bottom: .8rem; }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.sw { width: 14px; height: 10px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+.lw { width: 20px; height: 0; display: inline-block; flex-shrink: 0; }
 
-  .controls-label {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-family: var(--mono);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+/* NOTA */
+.note { padding: 9px 13px; background: #fff7ed; border-left: 3px solid #f97316; border-radius: 0 7px 7px 0; font-size: .75rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+.note strong { color: var(--text); }
 
-  #year-toggles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+/* DIVIDER */
+.divider { border: none; border-top: 1px dashed var(--border); margin: 2.5rem 0; }
 
-  #year-toggles button {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 3px 10px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    cursor: pointer;
-    transition: opacity 0.15s, background 0.15s;
-  }
-
-  #year-toggles button:hover { background: #eeecea; }
-  #year-toggles button.off { opacity: 0.3; }
-
-  .chart-wrap {
-    max-width: 960px;
-    margin: 0 auto 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem 1.5rem 1rem;
-  }
-
-  .chart-container {
-    position: relative;
-    width: 100%;
-    height: 420px;
-  }
-
-  .legend {
-    max-width: 960px;
-    margin: 0 auto 1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 20px;
-    font-size: 0.78rem;
-    color: var(--muted);
-  }
-
-  .legend span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .swatch {
-    width: 16px;
-    height: 11px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  .line-swatch {
-    width: 22px;
-    height: 2px;
-    flex-shrink: 0;
-    border-radius: 1px;
-  }
-
-  footer {
-    max-width: 960px;
-    margin: 2rem auto 0;
-    font-size: 0.72rem;
-    font-family: var(--mono);
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
+/* FOOTER */
+.foot { font-size: .7rem; font-family: var(--mono); color: #9ca3af; border-top: 1px solid var(--border); padding-top: .8rem; margin-top: .5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; }
 </style>
 </head>
 <body>
+<div class="page">
 
-<header>
-  <div class="titles">
-    <h1>Canal Endêmico — Dengue</h1>
-    <p>São Luís / MA · Incidência por 100 mil habitantes · SE 1–53</p>
-  </div>
-  <div class="badge">COVEP / SVES · SEMUS</div>
-</header>
+  <header class="site-header">
+    <div>
+      <h1>Diagrama de Controle da Dengue</h1>
+      <p>São Luís / MA · Incidência por 100 mil habitantes · Semanas Epidemiológicas 1–53</p>
+    </div>
+    <span class="badge">COVEP / SVES · SEMUS</span>
+  </header>
 
-<div class="card">
-  <div class="controls-label">Excluir anos do histórico de referência</div>
-  <div id="year-toggles"></div>
+  <!-- =============================================
+       BLOCO 1 — SELETOR DE ANO
+  ============================================== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Diagrama por ano</h2>
+      <p>Selecione o ano analisado — histórico de referência acumulado até o ano anterior</p>
+    </div>
+
+    <div class="year-selector" id="yearBtns"></div>
+
+    <div class="info-bar" id="infoBar"></div>
+
+    <div class="chart-card">
+      <div class="chart-wrap">
+        <canvas id="chartAnual" role="img" aria-label="Diagrama de controle da dengue por ano selecionado"></canvas>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="sw" style="background:rgba(34,197,94,0.2);border:1px solid #16a34a;"></span>Esperado (≤ Mediana)</span>
+      <span><span class="sw" style="background:rgba(250,204,21,0.3);border:1px solid #ca8a04;"></span>Alerta (Mediana – Q3)</span>
+      <span><span class="sw" style="background:rgba(220,38,38,0.18);border:1px solid #dc2626;"></span>Acima do esperado (≥ Q3)</span>
+      <span><span class="sw" style="background:rgba(100,116,139,0.42);border:1px solid #94a3b8;"></span>Ano selecionado</span>
+      <span><span class="lw" style="border-top:2px solid #16a34a;"></span>Q1</span>
+      <span><span class="lw" style="border-top:2px dashed #64748b;"></span>Mediana</span>
+      <span><span class="lw" style="border-top:2px solid #dc2626;"></span>Q3</span>
+    </div>
+
+    <div class="note" id="noteAnual"></div>
+
+    <div class="foot" id="footAnual"></div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- =============================================
+       BLOCO 2 — 2026 COM TOGGLES
+  ============================================== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>2026 — histórico ajustável</h2>
+      <p>Exclua anos do histórico de referência para avaliar o impacto de cada um no canal</p>
+    </div>
+
+    <div class="controls-label">Excluir anos do histórico de referência</div>
+    <div class="toggles" id="toggles2026"></div>
+
+    <div class="chart-card">
+      <div class="chart-wrap">
+        <canvas id="chart2026" role="img" aria-label="Diagrama de controle 2026 com histórico ajustável e barras de 2025 e 2026"></canvas>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="sw" style="background:rgba(34,197,94,0.2);border:1px solid #16a34a;"></span>Esperado (≤ Mediana)</span>
+      <span><span class="sw" style="background:rgba(250,204,21,0.3);border:1px solid #ca8a04;"></span>Alerta (Mediana – Q3)</span>
+      <span><span class="sw" style="background:rgba(220,38,38,0.18);border:1px solid #dc2626;"></span>Acima do esperado (≥ Q3)</span>
+      <span><span class="sw" style="background:rgba(148,163,184,0.5);border:1px solid #94a3b8;"></span>2025</span>
+      <span><span class="sw" style="background:rgba(220,38,38,0.8);border:1px solid #dc2626;"></span>2026</span>
+      <span><span class="lw" style="border-top:2px solid #16a34a;"></span>Q1</span>
+      <span><span class="lw" style="border-top:2px dashed #64748b;"></span>Mediana</span>
+      <span><span class="lw" style="border-top:2px solid #dc2626;"></span>Q3</span>
+    </div>
+
+    <div class="foot">
+      <span>Referência padrão: 2015, 2017–2025 · Método: quartis (Q1 / Mediana / Q3)</span>
+      <span>Fonte: SINAN · Atualizado: abril/2026</span>
+    </div>
+  </section>
+
 </div>
-
-<div class="chart-wrap">
-  <div class="chart-container">
-    <canvas id="endemicChart" role="img"
-      aria-label="Canal endêmico de dengue em São Luís/MA com limites Q1, mediana e Q3 e barras de incidência para 2025 e 2026 por semana epidemiológica">
-      Canal endêmico de dengue por semana epidemiológica, São Luís/MA.
-    </canvas>
-  </div>
-</div>
-
-<div class="legend">
-  <span><span class="swatch" style="background:rgba(34,197,94,0.2);border:1px solid #16a34a;"></span>Zona de segurança (abaixo de Q1)</span>
-  <span><span class="swatch" style="background:rgba(250,204,21,0.25);border:1px solid #ca8a04;"></span>Zona de alerta (Q1 – Mediana)</span>
-  <span><span class="swatch" style="background:rgba(249,115,22,0.2);border:1px solid #ea580c;"></span>Zona de epidemia (Mediana – Q3)</span>
-  <span><span class="swatch" style="background:rgba(220,38,38,0.15);border:1px solid #dc2626;"></span>Acima de Q3</span>
-  <span><span class="line-swatch" style="background:#16a34a;"></span>Q1</span>
-  <span><span class="line-swatch" style="background:#64748b;border-top:2px dashed #64748b;height:0;"></span>Mediana</span>
-  <span><span class="line-swatch" style="background:#dc2626;"></span>Q3</span>
-  <span><span class="swatch" style="background:rgba(148,163,184,0.55);border:1px solid #94a3b8;"></span>2025</span>
-  <span><span class="swatch" style="background:rgba(220,38,38,0.82);border:1px solid #dc2626;"></span>2026</span>
-</div>
-
-<footer>
-  <span>Histórico de referência: 2015, 2017–2024 · Método: quartis (Q1/Mediana/Q3)</span>
-  <span>Fonte: SINAN · Atualizado: abril/2026</span>
-</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+/* ========== DADOS ========== */
 const raw = {
   2015:[0.84,0.65,1.21,0.37,0.56,1.58,0.56,1.68,3.45,5.96,5.68,5.4,5.87,7.17,16.67,16.95,8.85,13.97,12.85,5.4,5.12,3.35,6.52,4.47,3.45,2.61,5.31,4.75,3.54,1.68,3.07,1.77,1.58,2.51,1.21,1.3,1.96,2.33,2.42,2.23,1.68,2.05,2.89,1.3,2.42,2.33,3.17,9.03,10.34,8.19,4.47,4.19,0.09],
   2017:[1.19,0.07,0.06,0.31,0.19,0.23,0.33,0.22,0.3,0.32,0.4,0.32,0.39,0.23,0.16,0.31,0.36,0.39,0.29,0.21,0.41,0.3,0.32,0.16,0.32,0.14,0.18,0.19,0.19,0.16,0.09,0.27,0.13,0.05,0.12,0.11,0.1,0.08,0.06,0.06,0.04,0.03,0.03,0.05,0.04,0.07,0.04,0.05,0.01,0.08,0.07,0.05,0],
@@ -225,124 +188,217 @@ const raw = {
   2026:[1.47,1.38,1.74,2.11,1.93,1.56,1.65,2.48,3.21,3.21,4.04,1.56,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
 };
 
-const histYears = [2015,2017,2018,2019,2020,2021,2022,2023,2024];
-let excluded = new Set();
+/* histórico de referência acumulado por ano analisado */
+const refPorAno = {
+  2022: [2015,2017,2018,2019,2020,2021],
+  2023: [2015,2017,2018,2019,2020,2021,2022],
+  2024: [2015,2017,2018,2019,2020,2021,2022,2023],
+  2025: [2015,2017,2018,2019,2020,2021,2022,2023,2024],
+  2026: [2015,2017,2018,2019,2020,2021,2022,2023,2024,2025]
+};
+
+const labels = Array.from({length:53}, (_,i)=>`SE ${i+1}`);
 
 function percentile(arr, p) {
-  const s = [...arr].sort((a,b)=>a-b);
-  const idx = (p/100)*(s.length-1);
-  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  const s=[...arr].sort((a,b)=>a-b);
+  const idx=(p/100)*(s.length-1), lo=Math.floor(idx), hi=Math.ceil(idx);
   return lo===hi ? s[lo] : s[lo]+(s[hi]-s[lo])*(idx-lo);
 }
 
-function buildBands() {
-  const active = histYears.filter(y=>!excluded.has(y)).map(y=>raw[y]);
+function calcBands(years) {
   const q1=[],med=[],q3=[];
-  for (let i=0;i<53;i++) {
-    const vals = active.map(y=>y[i]).filter(v=>v!=null&&!isNaN(v));
-    if (!vals.length){q1.push(null);med.push(null);q3.push(null);}
-    else {
-      q1.push(+percentile(vals,25).toFixed(3));
-      med.push(+percentile(vals,50).toFixed(3));
-      q3.push(+percentile(vals,75).toFixed(3));
-    }
+  for(let i=0;i<53;i++){
+    const vals=years.map(y=>raw[y][i]).filter(v=>v!=null&&!isNaN(v));
+    q1.push(+percentile(vals,25).toFixed(3));
+    med.push(+percentile(vals,50).toFixed(3));
+    q3.push(+percentile(vals,75).toFixed(3));
   }
   return {q1,med,q3};
 }
 
-const labels = Array.from({length:53},(_,i)=>`SE ${i+1}`);
-
-const fillPlugin = {
-  id:'zoneFill',
-  beforeDatasetsDraw(chart) {
-    const {ctx, chartArea:{left,right,top,bottom}, scales:{x,y}} = chart;
-    const {q1,med,q3} = chart._zoneBands;
-    const n = labels.length;
-    for (let i=0;i<n-1;i++) {
-      const x0=x.getPixelForValue(i), x1=x.getPixelForValue(i+1);
-      const bw=x1-x0;
-      if (q1[i]!=null) {
-        ctx.fillStyle='rgba(34,197,94,0.13)';
-        ctx.fillRect(x0, y.getPixelForValue(q1[i]), bw, y.getPixelForValue(0)-y.getPixelForValue(q1[i]));
-      }
-      if (q1[i]!=null&&med[i]!=null) {
-        ctx.fillStyle='rgba(250,204,21,0.2)';
-        ctx.fillRect(x0, y.getPixelForValue(med[i]), bw, y.getPixelForValue(q1[i])-y.getPixelForValue(med[i]));
-      }
-      if (med[i]!=null&&q3[i]!=null) {
-        ctx.fillStyle='rgba(249,115,22,0.18)';
+/* ---- plugin zonas ---- */
+function makeFillPlugin(getBands) {
+  return {
+    id:'zoneFill',
+    beforeDatasetsDraw(chart){
+      const {ctx, chartArea:{top}, scales:{x,y}} = chart;
+      const {med,q3} = getBands();
+      for(let i=0;i<52;i++){
+        const x0=x.getPixelForValue(i), x1=x.getPixelForValue(i+1), bw=x1-x0;
+        ctx.fillStyle='rgba(34,197,94,0.15)';
+        ctx.fillRect(x0, y.getPixelForValue(med[i]), bw, y.getPixelForValue(0)-y.getPixelForValue(med[i]));
+        ctx.fillStyle='rgba(250,204,21,0.22)';
         ctx.fillRect(x0, y.getPixelForValue(q3[i]), bw, y.getPixelForValue(med[i])-y.getPixelForValue(q3[i]));
-      }
-      if (q3[i]!=null) {
-        ctx.fillStyle='rgba(220,38,38,0.11)';
         const yq3=y.getPixelForValue(q3[i]);
-        if (yq3>top) ctx.fillRect(x0, top, bw, yq3-top);
+        if(yq3>top){ ctx.fillStyle='rgba(220,38,38,0.13)'; ctx.fillRect(x0,top,bw,yq3-top); }
       }
     }
+  };
+}
+
+/* ---- plugin linha SE15 ---- */
+const se15Plugin = {
+  id:'se15',
+  afterDatasetsDraw(chart){
+    const {ctx, chartArea:{top,bottom}, scales:{x}} = chart;
+    const xPos=x.getPixelForValue(14);
+    ctx.save();
+    ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(100,116,139,0.45)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(xPos,top); ctx.lineTo(xPos,bottom); ctx.stroke();
+    ctx.restore();
+    ctx.save();
+    ctx.font='500 10px IBM Plex Mono, monospace'; ctx.fillStyle='rgba(100,116,139,0.75)';
+    ctx.fillText('SE 15', xPos+4, top+13);
+    ctx.restore();
   }
 };
 
-function makeChart() {
-  const {q1,med,q3} = buildBands();
-  const inst = new Chart(document.getElementById('endemicChart'), {
-    type:'bar',
-    plugins:[fillPlugin],
-    data:{
-      labels,
-      datasets:[
-        {type:'bar',label:'2025',data:raw[2025],backgroundColor:'rgba(148,163,184,0.55)',borderColor:'rgba(100,116,139,0.6)',borderWidth:0.5,barPercentage:0.85,categoryPercentage:0.5,order:3},
-        {type:'bar',label:'2026',data:raw[2026],backgroundColor:'rgba(220,38,38,0.82)',borderColor:'rgba(185,28,28,0.9)',borderWidth:0.5,barPercentage:0.85,categoryPercentage:0.5,order:2},
-        {type:'line',label:'Q1',data:q1,borderColor:'#16a34a',borderWidth:1.8,pointRadius:0,tension:0.4,fill:false,order:1},
-        {type:'line',label:'Mediana',data:med,borderColor:'#64748b',borderWidth:1.8,borderDash:[5,4],pointRadius:0,tension:0.4,fill:false,order:1},
-        {type:'line',label:'Q3',data:q3,borderColor:'#dc2626',borderWidth:1.8,pointRadius:0,tension:0.4,fill:false,order:1}
-      ]
+/* ========================================
+   BLOCO 1 — SELETOR DE ANO
+======================================== */
+let currentYear = 2022;
+let currentBands = calcBands(refPorAno[currentYear]);
+let anualChart = null;
+
+function buildAnualDatasets(year, bands) {
+  return [
+    {
+      type:'bar', label: String(year),
+      data: raw[year],
+      backgroundColor:'rgba(100,116,139,0.42)',
+      borderColor:'rgba(100,116,139,0.6)',
+      borderWidth:0.5, barPercentage:0.85, categoryPercentage:0.92, order:3
     },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'rgba(26,25,23,0.9)',
-          titleFont:{family:'IBM Plex Mono',size:11},
-          bodyFont:{family:'IBM Plex Mono',size:11},
-          callbacks:{
-            label(ctx){
-              const v=ctx.parsed.y;
-              if(v==null||isNaN(v)) return null;
-              return `${ctx.dataset.label}: ${v.toFixed(2)}`;
-            }
-          }
-        }
-      },
-      scales:{
-        x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:18,font:{size:11,family:'IBM Plex Mono'},color:'#6b6a65'},grid:{color:'rgba(0,0,0,0.05)'}},
-        y:{title:{display:true,text:'Incidência por 100 mil hab.',font:{size:12,family:'IBM Plex Sans'},color:'#6b6a65'},ticks:{font:{size:11,family:'IBM Plex Mono'},color:'#6b6a65'},grid:{color:'rgba(0,0,0,0.05)'},min:0}
-      }
-    }
-  });
-  inst._zoneBands={q1,med,q3};
-  return inst;
+    {type:'line',label:'Q1',data:bands.q1,borderColor:'#16a34a',borderWidth:2,pointRadius:0,tension:0.4,fill:false,order:1},
+    {type:'line',label:'Mediana',data:bands.med,borderColor:'#64748b',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0.4,fill:false,order:1},
+    {type:'line',label:'Q3',data:bands.q3,borderColor:'#dc2626',borderWidth:2,pointRadius:0,tension:0.4,fill:false,order:1}
+  ];
 }
 
-let chartInst = makeChart();
+function makeChartOptions(getBands, year) {
+  return {
+    responsive:true, maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(26,25,23,0.92)',
+        titleFont:{size:11}, bodyFont:{size:11},
+        callbacks:{
+          label(ctx){ const v=ctx.parsed.y; if(v==null||isNaN(v)) return null; return `${ctx.dataset.label}: ${v.toFixed(2)}`; },
+          afterBody(items){
+            const i=items[0].dataIndex, v=raw[year][i];
+            if(v==null||isNaN(v)) return [];
+            const {med,q3}=getBands();
+            const z=v<=med[i]?'✅ Esperado':v<q3[i]?'⚠️ Alerta':'🔴 Acima do esperado';
+            return [`Zona: ${z}`];
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:18,font:{size:11},color:'#6b6a65'},grid:{color:'rgba(0,0,0,0.05)'}},
+      y:{title:{display:true,text:'Incidência por 100 mil hab.',font:{size:12},color:'#6b6a65'},ticks:{font:{size:11},color:'#6b6a65'},grid:{color:'rgba(0,0,0,0.05)'},min:0}
+    }
+  };
+}
 
-const tc = document.getElementById('year-toggles');
-histYears.forEach(y=>{
+function updateInfoAndNote(year) {
+  const ref = refPorAno[year];
+  const refStr = ref.join(', ');
+  document.getElementById('infoBar').innerHTML =
+    `Ano analisado: <strong>${year}</strong> &nbsp;|&nbsp; Referência histórica: <strong>${refStr}</strong> &nbsp;(${ref.length} anos)`;
+
+  const noteEl = document.getElementById('noteAnual');
+  const footEl = document.getElementById('footAnual');
+
+  if(year === 2022){
+    noteEl.innerHTML = '<strong>Nota:</strong> A partir da SE 15, os anos de referência mostram queda consistente. Em 2022 a incidência permanece elevada até a SE 30, evidenciando anomalia de sazonalidade.';
+  } else if(year === 2026){
+    noteEl.innerHTML = '<strong>Nota:</strong> Dados de 2026 disponíveis até a SE 12 (abril/2026). As semanas seguintes serão atualizadas conforme consolidação no SINAN.';
+  } else {
+    noteEl.innerHTML = `<strong>Nota:</strong> Diagrama de controle de ${year} com canal construído a partir dos ${ref.length} anos anteriores disponíveis.`;
+  }
+
+  footEl.innerHTML = `<span>Referência: ${refStr} · Método: quartis (Q1 / Mediana / Q3)</span><span>Fonte: SINAN · Atualizado: abril/2026</span>`;
+}
+
+function switchYear(year) {
+  currentYear = year;
+  currentBands = calcBands(refPorAno[year]);
+
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', +b.dataset.year === year));
+  updateInfoAndNote(year);
+
+  if(anualChart){
+    anualChart.destroy();
+  }
+
+  const fillP = makeFillPlugin(()=>currentBands);
+  const plugins = year === 2022 ? [fillP, se15Plugin] : [fillP];
+
+  anualChart = new Chart(document.getElementById('chartAnual'), {
+    type:'bar',
+    plugins: plugins,
+    data:{ labels, datasets: buildAnualDatasets(year, currentBands) },
+    options: makeChartOptions(()=>currentBands, year)
+  });
+}
+
+/* renderizar botões de ano */
+const yearBtnsEl = document.getElementById('yearBtns');
+[2022,2023,2024,2025,2026].forEach(y => {
+  const btn = document.createElement('button');
+  btn.className = 'year-btn';
+  btn.dataset.year = y;
+  btn.textContent = y;
+  btn.addEventListener('click', () => switchYear(y));
+  yearBtnsEl.appendChild(btn);
+});
+
+switchYear(2022); /* carrega 2022 por padrão */
+
+/* ========================================
+   BLOCO 2 — 2026 COM TOGGLES
+======================================== */
+const hist2026all = [2015,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+let excluded2026 = new Set();
+
+function getBands2026(){ return calcBands(hist2026all.filter(y=>!excluded2026.has(y))); }
+
+let bands2026 = getBands2026();
+const fillPlugin2026 = makeFillPlugin(()=>bands2026);
+
+const chart2026inst = new Chart(document.getElementById('chart2026'), {
+  type:'bar',
+  plugins:[fillPlugin2026],
+  data:{
+    labels,
+    datasets:[
+      {type:'bar',label:'2025',data:raw[2025],backgroundColor:'rgba(148,163,184,0.48)',borderColor:'rgba(100,116,139,0.55)',borderWidth:0.5,barPercentage:0.85,categoryPercentage:0.5,order:3},
+      {type:'bar',label:'2026',data:raw[2026],backgroundColor:'rgba(220,38,38,0.78)',borderColor:'rgba(185,28,28,0.9)',borderWidth:0.5,barPercentage:0.85,categoryPercentage:0.5,order:2},
+      {type:'line',label:'Q1',data:bands2026.q1,borderColor:'#16a34a',borderWidth:2,pointRadius:0,tension:0.4,fill:false,order:1},
+      {type:'line',label:'Mediana',data:bands2026.med,borderColor:'#64748b',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0.4,fill:false,order:1},
+      {type:'line',label:'Q3',data:bands2026.q3,borderColor:'#dc2626',borderWidth:2,pointRadius:0,tension:0.4,fill:false,order:1}
+    ]
+  },
+  options: makeChartOptions(()=>bands2026, 2026)
+});
+
+const t26el = document.getElementById('toggles2026');
+hist2026all.forEach(y=>{
   const btn=document.createElement('button');
   btn.textContent=y;
   btn.addEventListener('click',()=>{
-    if(excluded.has(y)){excluded.delete(y);btn.classList.remove('off');}
-    else{excluded.add(y);btn.classList.add('off');}
-    const bands=buildBands();
-    chartInst._zoneBands=bands;
-    chartInst.data.datasets[2].data=bands.q1;
-    chartInst.data.datasets[3].data=bands.med;
-    chartInst.data.datasets[4].data=bands.q3;
-    chartInst.update();
+    excluded2026.has(y) ? excluded2026.delete(y) : excluded2026.add(y);
+    btn.classList.toggle('off');
+    bands2026 = getBands2026();
+    chart2026inst.data.datasets[2].data = bands2026.q1;
+    chart2026inst.data.datasets[3].data = bands2026.med;
+    chart2026inst.data.datasets[4].data = bands2026.q3;
+    chart2026inst.update();
   });
-  tc.appendChild(btn);
+  t26el.appendChild(btn);
 });
 </script>
 </body>
